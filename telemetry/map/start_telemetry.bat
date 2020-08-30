@@ -1,0 +1,2 @@
+START /B http-server "C:\Users\simon.p.odonoghue\Desktop\ksp\ksp-control\telemetry\map"
+"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir="C:\tmp" "https://5ff5fc10c44b4a5196da4e58284884da.eu-west-2.aws.cloud.es.io:9243/app/dashboards#/view/f87a58a0-ea12-11ea-b813-475a93fa4be3"

@@ -15,6 +15,9 @@ indexName = "telemetry-" + str(datetime.now()).replace(' ','').replace(':','')
 mapping = {
     "mappings": {
         "properties": {
+            "type": {
+                "type": "keyword"
+            },
             "time": {
                 "type": "date"
             },
