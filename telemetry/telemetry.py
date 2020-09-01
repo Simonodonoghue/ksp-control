@@ -43,7 +43,7 @@ print("Telemetry created with name " + indexName)
 input("Press any key to continue")
 
 # connect to KSP for telemetry
-conn = krpc.connect(name="testpy", address="192.168.1.174")
+conn = krpc.connect(name="telemtry", address="192.168.1.174")
 sc = conn.space_center
 
 parts = []
@@ -109,9 +109,14 @@ def configureVesselStreams(v):
             })
 
 def inVessels(v):
+    
     for ve in parts:
-        if v.name == ve.v.name:
-            return True
+        try:
+            if v.name == ve.v.name:
+                return True
+        except:
+            print("removing vessel")
+            parts.remove(ve)
 
     return False
 
@@ -123,32 +128,35 @@ while (True):
 
     for v in parts:
         for s in v.streams:    
+            try:
+                if (s['metric'] == 'location'):
+                    ind = es.index(index=ci['index'],body={
+                        'type': s['metric'],
+                        'vessel': v.v.name,
+                        'time': datetime.now(),
+                        "location": {
+                            'lat': s['lat_stream'](),
+                            'lon': s['lon_stream']()
+                        }
+                    })
+                elif (not 'part' in s):
+                    ind = es.index(index=ci['index'],body={
+                        'type': s['metric'], 
+                        'vessel': v.v.name,
+                        'time': datetime.now(),
+                        "value": s['stream']()
+                    })
+                else:
+                    ind = es.index(index=ci['index'],body={
+                        'type': s['metric'],
+                        'vessel': v.v.name,
+                        'partName': s['part'],
+                        'time': datetime.now(),
+                        "value": s['stream']()
+                    })
 
-            if (s['metric'] == 'location'):
-                ind = es.index(index=ci['index'],body={
-                    'type': s['metric'],
-                    'vessel': v.v.name,
-                    'time': datetime.now(),
-                    "location": {
-                        'lat': s['lat_stream'](),
-                        'lon': s['lon_stream']()
-                    }
-                })
-            elif (not 'part' in s):
-                ind = es.index(index=ci['index'],body={
-                    'type': s['metric'], 
-                    'vessel': v.v.name,
-                    'time': datetime.now(),
-                    "value": s['stream']()
-                })
-            else:
-                ind = es.index(index=ci['index'],body={
-                    'type': s['metric'],
-                    'vessel': v.v.name,
-                    'partName': s['part'],
-                    'time': datetime.now(),
-                    "value": s['stream']()
-                })
+            except:
+                pass
 
     time.sleep(1)
 
